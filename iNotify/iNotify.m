@@ -267,13 +267,6 @@ static iNotify *sharedInstance = nil;
 			[delegate iNotifyNotificationsCheckDidFailWithError:downloadError];
 		}
         
-        //deprecated code path
-		else if ([delegate respondsToSelector:@selector(iNotifyNotificationsCheckFailed:)])
-		{
-            NSLog(@"iNotifyNotificationsCheckFailed: delegate method is deprecated, use iNotifyNotificationsCheckDidFailWithError: instead");
-			[delegate performSelector:@selector(iNotifyNotificationsCheckFailed:) withObject:downloadError];
-		}
-        
 		return;
 	}
     
@@ -283,13 +276,6 @@ static iNotify *sharedInstance = nil;
 		[delegate iNotifyDidDetectNotifications:notificationsDict];
 	}
     
-    //deprecated code path
-    else if ([delegate respondsToSelector:@selector(iNotifyDetectedNotifications:)])
-	{
-        NSLog(@"iNotifyDetectedNotifications: delegate method is deprecated, use iNotifyDidDetectNotifications: instead");
-        [delegate performSelector:@selector(iNotifyDetectedNotifications:) withObject:notificationsDict];
-	}	
-	
 	//get next notification
 	NSString *notificationKey = [self nextNotificationInDict:notificationsDict];
 	if (notificationKey)
@@ -438,7 +424,7 @@ static iNotify *sharedInstance = nil;
                     }
                     else
                     {
-                        notifications = [NSPropertyListSerialization propertyListFromData:data mutabilityOption:0 format:&format errorDescription:NULL];
+                        notifications = [NSPropertyListSerialization propertyListWithData:data options:0 format:&format error:&error];
                     }
                 }
                 [self performSelectorOnMainThread:@selector(setDownloadError:) withObject:error waitUntilDone:YES];
